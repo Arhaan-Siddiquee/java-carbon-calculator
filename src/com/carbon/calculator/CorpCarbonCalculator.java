@@ -193,17 +193,28 @@ public class CorpCarbonCalculator extends JFrame {
         }
     }
 
-    // Method to save calculated emission data to MySQL database
+    // Method to save calculated emission data to MySQL database with logging
     private void saveToDatabase(String state, double electricityUsage, double fuelUsage, double lpgUsage, double wasteGeneration, double totalEmission, int members) {
-        String url = "jdbc:mysql://localhost:3306/corp_carbon"; // Change this if necessary
+        String url = "jdbc:mysql://localhost:3306/corporate_carbon"; // Updated database name
         String user = "root"; // Your MySQL username
-        String password = "password"; // Your MySQL password
+        String password = "ArhaanShahraan2006"; // Your MySQL password
 
         String query = "INSERT INTO emissions (state, electricity_usage, fuel_usage, lpg_usage, waste_generation, total_emission, members) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
+            // Log what is about to be saved
+            System.out.println("Preparing to save the following data to the database:");
+            System.out.println("State: " + state);
+            System.out.println("Electricity Usage: " + electricityUsage + " kWh");
+            System.out.println("Fuel Usage: " + fuelUsage + " liters");
+            System.out.println("LPG Usage: " + lpgUsage + " cylinders");
+            System.out.println("Waste Generation: " + wasteGeneration + " kg");
+            System.out.println("Total Emission: " + totalEmission + " kg CO2 per member");
+            System.out.println("Members: " + members);
+
+            // Set the values to be inserted
             stmt.setString(1, state);
             stmt.setDouble(2, electricityUsage);
             stmt.setDouble(3, fuelUsage);
@@ -212,16 +223,27 @@ public class CorpCarbonCalculator extends JFrame {
             stmt.setDouble(6, totalEmission);
             stmt.setInt(7, members);
 
-            stmt.executeUpdate();
-            System.out.println("Data saved to database.");
+            // Execute the insert
+            int rowsInserted = stmt.executeUpdate();
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+            // Log the result of the database operation
+            if (rowsInserted > 0) {
+                System.out.println("Data successfully saved to the database.");
+            } else {
+                System.out.println("Data insert failed.");
+            }
+
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        CorpCarbonCalculator calculator = new CorpCarbonCalculator();
-        calculator.setVisible(true);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new CorpCarbonCalculator().setVisible(true);
+            }
+        });
     }
 }
