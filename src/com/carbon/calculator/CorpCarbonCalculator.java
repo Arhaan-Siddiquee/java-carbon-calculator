@@ -2,6 +2,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 public class CorpCarbonCalculator extends JFrame {
@@ -16,33 +20,34 @@ public class CorpCarbonCalculator extends JFrame {
         states.put("Andaman and Nicobar Islands", 0.79);
         states.put("Andhra Pradesh", 0.91);
         states.put("Arunachal Pradesh", 0.11);
-        states.put("Assam", 0.56);
-        states.put("Bihar", 0.88);
-        states.put("Chhattisgarh", 0.83);
-        states.put("Goa", 0.77);
-        states.put("Gujarat", 0.85);
-        states.put("Haryana", 0.92);
-        states.put("Himachal Pradesh", 0.34);
-        states.put("Jharkhand", 0.80);
-        states.put("Karnataka", 0.74);
-        states.put("Kerala", 0.64);
-        states.put("Madhya Pradesh", 0.90);
-        states.put("Maharashtra", 0.89);
-        states.put("Manipur", 0.20);
-        states.put("Meghalaya", 0.43);
-        states.put("Mizoram", 0.25);
-        states.put("Nagaland", 0.19);
-        states.put("Odisha", 0.78);
-        states.put("Punjab", 0.95);
-        states.put("Rajasthan", 0.82);
-        states.put("Sikkim", 0.28);
-        states.put("Tamil Nadu", 0.86);
-        states.put("Telangana", 0.87);
-        states.put("Tripura", 0.22);
-        states.put("Uttar Pradesh", 0.90);
-        states.put("Uttarakhand", 0.61);
+        // Add the rest of the states...
+        states.put("Assam", 0.79);
+        states.put("Bihar", 0.70);
+        states.put("Chhattisgarh", 0.92);
+        states.put("Goa", 0.61);
+        states.put("Gujarat", 0.95);
+        states.put("Haryana", 0.90);
+        states.put("Himachal Pradesh", 0.35);
+        states.put("Jammu and Kashmir", 0.70);
+        states.put("Jharkhand", 0.85);
+        states.put("Karnataka", 0.77);
+        states.put("Kerala", 0.80);
+        states.put("Madhya Pradesh", 0.88);
+        states.put("Maharashtra", 0.75);
+        states.put("Manipur", 0.44);
+        states.put("Meghalaya", 0.45);
+        states.put("Mizoram", 0.30);
+        states.put("Nagaland", 0.11);
+        states.put("Odisha", 0.92);
+        states.put("Punjab", 0.87);
+        states.put("Rajasthan", 0.92);
+        states.put("Sikkim", 0.39);
+        states.put("Tamil Nadu", 0.75);
+        states.put("Telangana", 0.85);
+        states.put("Tripura", 0.79);
+        states.put("Uttar Pradesh", 0.83);
+        states.put("Uttarakhand", 0.52);
         states.put("West Bengal", 0.75);
-        states.put("Delhi", 1.10);  // Higher due to urban factors
 
         // Create the UI components
         setTitle("CO2 Emission Calculator");
@@ -162,13 +167,16 @@ public class CorpCarbonCalculator extends JFrame {
 
             // Emission factors
             double electricityFactor = states.get(state);
-            double fuelFactor = 2.32;
-            double lpgFactor = 1.8;
-            double wasteFactor = 0.44;
+            double fuelFactor = 2.32; // Example factor for fuel
+            double lpgFactor = 1.8; // Example factor for LPG
+            double wasteFactor = 0.44; // Example factor for waste
 
             // Calculate total emissions
             double totalEmission = (electricityUsage * electricityFactor + fuelUsage * fuelFactor +
                     lpgUsage * lpgFactor + wasteGeneration * wasteFactor) / members;
+
+            // Save emission data to database
+            saveToDatabase(state, electricityUsage, fuelUsage, lpgUsage, wasteGeneration, totalEmission, members);
 
             // Display result
             resultLabel.setText(String.format("Total Emission: %.2f kg CO2 per member.", totalEmission));
@@ -180,17 +188,40 @@ public class CorpCarbonCalculator extends JFrame {
                 resultLabel.setForeground(Color.RED);
             }
         } catch (NumberFormatException ex) {
-            resultLabel.setText("Please enter valid numeric values.");
+            resultLabel.setText("Please enter valid numbers.");
             resultLabel.setForeground(Color.RED);
         }
     }
 
+    // Method to save calculated emission data to MySQL database
+    private void saveToDatabase(String state, double electricityUsage, double fuelUsage, double lpgUsage, double wasteGeneration, double totalEmission, int members) {
+        String url = "jdbc:mysql://localhost:3306/corp_carbon"; // Change this if necessary
+        String user = "root"; // Your MySQL username
+        String password = "password"; // Your MySQL password
+
+        String query = "INSERT INTO emissions (state, electricity_usage, fuel_usage, lpg_usage, waste_generation, total_emission, members) VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DriverManager.getConnection(url, user, password);
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, state);
+            stmt.setDouble(2, electricityUsage);
+            stmt.setDouble(3, fuelUsage);
+            stmt.setDouble(4, lpgUsage);
+            stmt.setDouble(5, wasteGeneration);
+            stmt.setDouble(6, totalEmission);
+            stmt.setInt(7, members);
+
+            stmt.executeUpdate();
+            System.out.println("Data saved to database.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new CorpCarbonCalculator().setVisible(true);
-            }
-        });
+        CorpCarbonCalculator calculator = new CorpCarbonCalculator();
+        calculator.setVisible(true);
     }
 }
