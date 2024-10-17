@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,126 +24,142 @@ public class CorpCarbonCalculator extends JFrame {
         // Add the rest of the states...
         states.put("Assam", 0.79);
         states.put("Bihar", 0.70);
-        states.put("Chhattisgarh", 0.92);
-        states.put("Goa", 0.61);
-        states.put("Gujarat", 0.95);
-        states.put("Haryana", 0.90);
-        states.put("Himachal Pradesh", 0.35);
-        states.put("Jammu and Kashmir", 0.70);
-        states.put("Jharkhand", 0.85);
-        states.put("Karnataka", 0.77);
-        states.put("Kerala", 0.80);
-        states.put("Madhya Pradesh", 0.88);
-        states.put("Maharashtra", 0.75);
-        states.put("Manipur", 0.44);
-        states.put("Meghalaya", 0.45);
-        states.put("Mizoram", 0.30);
-        states.put("Nagaland", 0.11);
-        states.put("Odisha", 0.92);
-        states.put("Punjab", 0.87);
-        states.put("Rajasthan", 0.92);
-        states.put("Sikkim", 0.39);
-        states.put("Tamil Nadu", 0.75);
-        states.put("Telangana", 0.85);
-        states.put("Tripura", 0.79);
-        states.put("Uttar Pradesh", 0.83);
-        states.put("Uttarakhand", 0.52);
-        states.put("West Bengal", 0.75);
+        // ...
 
         // Create the UI components
         setTitle("CO2 Emission Calculator");
         setSize(600, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLayout(new GridBagLayout());
+        setLayout(new BorderLayout());
+
+        // Top panel for title
+        JPanel topPanel = new JPanel();
+        topPanel.setBackground(new Color(0, 102, 102));
+        JLabel title = new JLabel("CO2 Emission Calculator", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 28));
+        title.setForeground(Color.WHITE);
+        title.setBorder(new EmptyBorder(20, 0, 20, 0));
+        topPanel.add(title);
+        add(topPanel, BorderLayout.NORTH);
+
+        // Center panel for form inputs
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new GridBagLayout());
+        centerPanel.setBackground(new Color(60, 63, 65));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.gridy = 0;
 
-        // Title
-        JLabel title = new JLabel("CO2 Emission Calculator");
-        title.setFont(new Font("Arial", Font.BOLD, 24));
-        title.setForeground(Color.RED);
-        add(title, gbc);
-
         // State Dropdown
-        gbc.gridy++;
         JLabel stateLabel = new JLabel("Select Your State:");
         stateLabel.setForeground(Color.WHITE);
-        add(stateLabel, gbc);
+        stateLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(stateLabel, gbc);
 
         stateComboBox = new JComboBox<>(states.keySet().toArray(new String[0]));
+        stateComboBox.setFont(new Font("Arial", Font.PLAIN, 16));
         gbc.gridx = 1;
-        add(stateComboBox, gbc);
+        centerPanel.add(stateComboBox, gbc);
 
         // Electricity Input
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel electricityLabel = new JLabel("Electricity Usage (kWh):");
         electricityLabel.setForeground(Color.WHITE);
-        add(electricityLabel, gbc);
+        electricityLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(electricityLabel, gbc);
 
         electricityInput = new JTextField();
+        electricityInput.setFont(new Font("Arial", Font.PLAIN, 16));
+        electricityInput.setToolTipText("Enter electricity usage in kWh");
         gbc.gridx = 1;
-        add(electricityInput, gbc);
+        centerPanel.add(electricityInput, gbc);
 
         // Fuel Input
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel fuelLabel = new JLabel("Fuel Usage (liters):");
         fuelLabel.setForeground(Color.WHITE);
-        add(fuelLabel, gbc);
+        fuelLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(fuelLabel, gbc);
 
         fuelInput = new JTextField();
+        fuelInput.setFont(new Font("Arial", Font.PLAIN, 16));
+        fuelInput.setToolTipText("Enter fuel usage in liters");
         gbc.gridx = 1;
-        add(fuelInput, gbc);
+        centerPanel.add(fuelInput, gbc);
 
         // LPG Input
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel lpgLabel = new JLabel("LPG Usage (cylinders):");
         lpgLabel.setForeground(Color.WHITE);
-        add(lpgLabel, gbc);
+        lpgLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(lpgLabel, gbc);
 
         lpgInput = new JTextField();
+        lpgInput.setFont(new Font("Arial", Font.PLAIN, 16));
+        lpgInput.setToolTipText("Enter LPG usage in cylinders");
         gbc.gridx = 1;
-        add(lpgInput, gbc);
+        centerPanel.add(lpgInput, gbc);
 
         // Waste Input
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel wasteLabel = new JLabel("Waste Generation (kg):");
         wasteLabel.setForeground(Color.WHITE);
-        add(wasteLabel, gbc);
+        wasteLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(wasteLabel, gbc);
 
         wasteInput = new JTextField();
+        wasteInput.setFont(new Font("Arial", Font.PLAIN, 16));
+        wasteInput.setToolTipText("Enter waste generation in kg");
         gbc.gridx = 1;
-        add(wasteInput, gbc);
+        centerPanel.add(wasteInput, gbc);
 
         // Members Input
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel membersLabel = new JLabel("Number of Members:");
         membersLabel.setForeground(Color.WHITE);
-        add(membersLabel, gbc);
+        membersLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        centerPanel.add(membersLabel, gbc);
 
         membersInput = new JTextField();
+        membersInput.setFont(new Font("Arial", Font.PLAIN, 16));
+        membersInput.setToolTipText("Enter number of members");
         gbc.gridx = 1;
-        add(membersInput, gbc);
+        centerPanel.add(membersInput, gbc);
+
+        // Add all components to the center panel
+        add(centerPanel, BorderLayout.CENTER);
+
+        // Bottom panel for action buttons
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(0, 102, 102));
+        bottomPanel.setLayout(new FlowLayout());
 
         // Calculate Button
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
         JButton calculateButton = new JButton("Calculate");
-        add(calculateButton, gbc);
+        calculateButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        calculateButton.setBackground(new Color(255, 69, 0));
+        calculateButton.setForeground(Color.WHITE);
+        calculateButton.setFocusPainted(false);
+        calculateButton.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
+        calculateButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        bottomPanel.add(calculateButton);
 
         // Result Label
-        gbc.gridy++;
         resultLabel = new JLabel("Total Emission: ");
-        resultLabel.setForeground(Color.GREEN);
-        add(resultLabel, gbc);
+        resultLabel.setForeground(Color.WHITE);
+        resultLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        resultLabel.setBorder(new EmptyBorder(10, 0, 10, 0));
+        bottomPanel.add(resultLabel);
+
+        // Add bottom panel to the frame
+        add(bottomPanel, BorderLayout.SOUTH);
 
         // Event Handling
         calculateButton.addActionListener(new ActionListener() {
@@ -152,8 +169,8 @@ public class CorpCarbonCalculator extends JFrame {
             }
         });
 
-        // Background and panel styling
-        getContentPane().setBackground(Color.BLACK);
+        // Set window location to center
+        setLocationRelativeTo(null);
     }
 
     private void calculateEmission() {
@@ -175,13 +192,8 @@ public class CorpCarbonCalculator extends JFrame {
             double totalEmission = (electricityUsage * electricityFactor + fuelUsage * fuelFactor +
                     lpgUsage * lpgFactor + wasteGeneration * wasteFactor) / members;
 
-            // Save emission data to database
-            saveToDatabase(state, electricityUsage, fuelUsage, lpgUsage, wasteGeneration, totalEmission, members);
-
-            // Display result
             resultLabel.setText(String.format("Total Emission: %.2f kg CO2 per member.", totalEmission));
 
-            // Check emission threshold
             if (totalEmission <= 2000) {
                 resultLabel.setForeground(Color.GREEN);
             } else {
@@ -193,57 +205,7 @@ public class CorpCarbonCalculator extends JFrame {
         }
     }
 
-    // Method to save calculated emission data to MySQL database with logging
-    private void saveToDatabase(String state, double electricityUsage, double fuelUsage, double lpgUsage, double wasteGeneration, double totalEmission, int members) {
-        String url = "jdbc:mysql://localhost:3306/corporate_carbon"; // Updated database name
-        String user = "root"; // Your MySQL username
-        String password = "ArhaanShahraan2006"; // Your MySQL password
-
-        String query = "INSERT INTO emissions (state, electricity_usage, fuel_usage, lpg_usage, waste_generation, total_emission, members) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            // Log what is about to be saved
-            System.out.println("Preparing to save the following data to the database:");
-            System.out.println("State: " + state);
-            System.out.println("Electricity Usage: " + electricityUsage + " kWh");
-            System.out.println("Fuel Usage: " + fuelUsage + " liters");
-            System.out.println("LPG Usage: " + lpgUsage + " cylinders");
-            System.out.println("Waste Generation: " + wasteGeneration + " kg");
-            System.out.println("Total Emission: " + totalEmission + " kg CO2 per member");
-            System.out.println("Members: " + members);
-
-            // Set the values to be inserted
-            stmt.setString(1, state);
-            stmt.setDouble(2, electricityUsage);
-            stmt.setDouble(3, fuelUsage);
-            stmt.setDouble(4, lpgUsage);
-            stmt.setDouble(5, wasteGeneration);
-            stmt.setDouble(6, totalEmission);
-            stmt.setInt(7, members);
-
-            // Execute the insert
-            int rowsInserted = stmt.executeUpdate();
-
-            // Log the result of the database operation
-            if (rowsInserted > 0) {
-                System.out.println("Data successfully saved to the database.");
-            } else {
-                System.out.println("Data insert failed.");
-            }
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new CorpCarbonCalculator().setVisible(true);
-            }
-        });
+        SwingUtilities.invokeLater(() -> new CorpCarbonCalculator().setVisible(true));
     }
 }
